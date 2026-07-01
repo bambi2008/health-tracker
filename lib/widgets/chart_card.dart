@@ -99,7 +99,7 @@ class ChartCard extends StatelessWidget {
                       barRods: [
                         BarChartRodData(
                           toY: (dailyData[entry.value] ?? 0).toDouble(),
-                          color: AppTheme.primaryColor,
+                          color: AppTheme.primary,
                           width: 16,
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(4)),

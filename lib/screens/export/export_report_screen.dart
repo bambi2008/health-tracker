@@ -471,7 +471,7 @@ class _DataPreview extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _count('症状', sc, AppTheme.primaryColor),
+                _count('症状', sc, AppTheme.primary),
                 _count('饮食', dc, Colors.orange),
                 _count('睡眠', slc, Colors.indigo),
                 _count('压力', stc, Colors.red),

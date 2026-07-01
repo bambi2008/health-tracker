@@ -344,7 +344,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return Row(children: [
       _card(Icons.healing, '症状', '${s.length}条',
           s.isNotEmpty ? '均${(s.fold<int>(0,(a,b)=>a+b.severity)/s.length).toStringAsFixed(1)}分' : '--',
-          AppTheme.primaryColor),
+          AppTheme.primary),
       const SizedBox(width: 8),
       _card(Icons.bed, '睡眠', '${sl.length}晚',
           sl.isNotEmpty ? '均${(sl.fold<int>(0,(a,b)=>a+b.quality)/sl.length).toStringAsFixed(1)}分' : '--',
@@ -406,7 +406,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                 ),
                 borderData: FlBorderData(show: false),
                 barGroups: dates.asMap().entries.map((e) => BarChartGroupData(x: e.key, barRods: [
-                  BarChartRodData(toY: (data[e.value]??0).toDouble(), color: AppTheme.primaryColor,
+                  BarChartRodData(toY: (data[e.value]??0).toDouble(), color: AppTheme.primary,
                     width: _days > 14 ? 7 : 16, borderRadius: const BorderRadius.vertical(top: Radius.circular(3))),
                 ])).toList(),
               )),

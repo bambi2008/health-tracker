@@ -19,6 +19,7 @@ import 'providers/stress_provider.dart';
 import 'providers/report_provider.dart';
 import 'providers/user_settings_provider.dart';
 import 'providers/community_provider.dart';
+import 'services/sample_data.dart';
 import 'app.dart';
 
 void main() async {
@@ -42,16 +43,34 @@ void main() async {
     Hive.openBox<Comment>('comments'),
   ]);
 
+  // 获取 providers 引用以便 auto-seed
+  final symptomProv = SymptomProvider()..init();
+  final dietProv = DietProvider()..init();
+  final sleepProv = SleepProvider()..init();
+  final stressProv = StressProvider()..init();
+  final communityProv = CommunityProvider()..init();
+
+  // 首次启动自动导入示例数据
+  if (symptomProv.symptoms.isEmpty) {
+    await SampleData.importAll(
+      symptomProv: symptomProv,
+      dietProv: dietProv,
+      sleepProv: sleepProv,
+      stressProv: stressProv,
+      communityProv: communityProv,
+    );
+  }
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserSettingsProvider()..init()),
-        ChangeNotifierProvider(create: (_) => SymptomProvider()..init()),
-        ChangeNotifierProvider(create: (_) => DietProvider()..init()),
-        ChangeNotifierProvider(create: (_) => SleepProvider()..init()),
-        ChangeNotifierProvider(create: (_) => StressProvider()..init()),
+        ChangeNotifierProvider(create: (_) => symptomProv),
+        ChangeNotifierProvider(create: (_) => dietProv),
+        ChangeNotifierProvider(create: (_) => sleepProv),
+        ChangeNotifierProvider(create: (_) => stressProv),
         ChangeNotifierProvider(create: (_) => ReportProvider()..init()),
-        ChangeNotifierProvider(create: (_) => CommunityProvider()..init()),
+        ChangeNotifierProvider(create: (_) => communityProv),
       ],
       child: const HealthTrackerApp(),
     ),

@@ -5,6 +5,7 @@ import '../../models/symptom.dart';
 import '../../providers/symptom_provider.dart';
 import '../../config/categories.dart';
 import '../../config/theme.dart';
+import '../../services/voice_service.dart';
 
 class AddSymptomScreen extends StatefulWidget {
   final Symptom? existing;
@@ -32,6 +33,8 @@ class _AddSymptomScreenState extends State<AddSymptomScreen> {
   // 触发 & 缓解（可选）
   final List<String> _triggers = [];
   final List<String> _reliefs = [];
+  final _voiceCtrl = TextEditingController();
+  bool _parsing = false;
   final _triggerCtrl = TextEditingController();
   final _reliefCtrl = TextEditingController();
 
@@ -126,6 +129,57 @@ class _AddSymptomScreenState extends State<AddSymptomScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ===== 0. 语音快记 =====
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.2),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    const Icon(Icons.mic, color: Colors.deepPurple, size: 20),
+                    const SizedBox(width: 8),
+                    const Text('语音快记', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    const Spacer(),
+                    if (_parsing)
+                      const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                  ]),
+                  const SizedBox(height: 4),
+                  Text('说说你的感觉，比如"今天头痛7分，可能是熬夜了"', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _voiceCtrl,
+                        maxLines: 2,
+                        decoration: const InputDecoration(
+                          hintText: '打字或点右边麦克风说出症状...', isDense: true, border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Column(children: [
+                      IconButton.filled(
+                        onPressed: _parsing ? null : _startVoice,
+                        icon: const Icon(Icons.mic, size: 20),
+                        style: IconButton.styleFrom(backgroundColor: Colors.deepPurple, foregroundColor: Colors.white),
+                      ),
+                      const Text('说出', style: TextStyle(fontSize: 9)),
+                    ]),
+                    const SizedBox(width: 4),
+                    Column(children: [
+                      IconButton(
+                        onPressed: _parsing || _voiceCtrl.text.isEmpty ? null : _parseVoice,
+                        icon: const Icon(Icons.auto_awesome, size: 20),
+                      ),
+                      const Text('解析', style: TextStyle(fontSize: 9)),
+                    ]),
+                  ]),
+                ]),
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // ===== 1. 身体部位 =====
             const Text('身体部位',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -498,6 +552,47 @@ class _AddSymptomScreenState extends State<AddSymptomScreen> {
         ],
       ),
     );
+  }
+
+  void _startVoice() {
+    showDialog(context: context, builder: (ctx) => AlertDialog(
+      title: const Text('💬 语音快记'),
+      content: const Text('在输入框中用自然语言描述你的症状，\n比如：\n\n"今天头痛7分，昨晚熬夜了，\n左太阳穴跳痛了半小时"\n\n点击 ✨ 解析，AI会自动填好下面的表单'),
+      actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('知道了'))],
+    ));
+  }
+
+  Future<void> _parseVoice() async {
+    setState(() => _parsing = true);
+    final result = await VoiceService.parseVoice(_voiceCtrl.text);
+    setState(() => _parsing = false);
+
+    if (result == null || result.containsKey('error')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('解析失败，试试更详细的描述')),
+      );
+      return;
+    }
+
+    setState(() {
+      _bodyPart = result['body_part'] ?? 'general';
+      _bodyDetail = result['body_detail'] ?? 'general';
+      _bodyDetailLabel = result['body_detail'] ?? '';
+      _severity = result['severity'] ?? 5;
+      _onsetType = result['onset_type'] ?? 'gradual';
+      _descriptionCtrl.text = result['description'] ?? _voiceCtrl.text;
+      if (result['duration_min'] != null) _durationMin = result['duration_min'];
+      if (result['triggers'] != null) {
+        for (final t in (result['triggers'] as List)) {
+          if (!_triggers.contains(t.toString())) _triggers.add(t.toString());
+        }
+      }
+      if (result['reliefs'] != null) {
+        for (final r in (result['reliefs'] as List)) {
+          if (!_reliefs.contains(r.toString())) _reliefs.add(r.toString());
+        }
+      }
+    });
   }
 
   String get _severityLabel {
