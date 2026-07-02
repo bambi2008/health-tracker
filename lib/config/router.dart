@@ -14,9 +14,10 @@ import '../screens/knowledge/questionnaire_screen.dart';
 import '../screens/export/export_report_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/profile_screen.dart';
+import '../screens/login_screen.dart';
 
 final router = GoRouter(
-  initialLocation: '/symptoms',
+  initialLocation: '/login',
   routes: [
     ShellRoute(
       builder: (context, state, child) => MainShell(child: child),
@@ -81,6 +82,7 @@ final router = GoRouter(
         ),
       ],
     ),
+    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
     // 独立页面（无底部导航）
     GoRoute(
       path: '/export',

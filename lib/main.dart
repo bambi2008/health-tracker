@@ -19,6 +19,7 @@ import 'providers/stress_provider.dart';
 import 'providers/report_provider.dart';
 import 'providers/user_settings_provider.dart';
 import 'providers/community_provider.dart';
+import 'providers/auth_provider.dart';
 import 'services/sample_data.dart';
 import 'app.dart';
 
@@ -64,6 +65,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserSettingsProvider()..init()),
         ChangeNotifierProvider(create: (_) => symptomProv),
         ChangeNotifierProvider(create: (_) => dietProv),

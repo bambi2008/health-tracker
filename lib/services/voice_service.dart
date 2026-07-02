@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 /// 语音识别 + AI 解析服务
 class VoiceService {
-  static const String _deepseekUrl = 'http://localhost:8000/api/v1/ai/parse-voice';
+  static const String _deepseekUrl = 'http://10.0.55.17:9000/api/v1/ai/parse-voice';
 
   /// 用 DeepSeek 把自然语言解析成结构化症状数据
   static Future<Map<String, dynamic>?> parseVoice(String text) async {

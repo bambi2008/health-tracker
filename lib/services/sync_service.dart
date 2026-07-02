@@ -6,7 +6,7 @@ import '../models/sleep_log.dart';
 import '../models/stress_log.dart';
 
 class SyncService {
-  static const String baseUrl = 'http://localhost:8000/api/v1/sync';
+  static const String baseUrl = 'http://10.0.55.17:9000/api/v1/sync';
   static const String deviceId = 'health_tracker_device_001';
 
   /// 上传本地所有数据到服务器

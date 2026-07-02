@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.api.v1.ai import router as ai_router
 from app.api.v1.sync import router as sync_router
+from app.api.v1.auth import router as auth_router
 
 settings = get_settings()
 
@@ -25,6 +26,7 @@ app.add_middleware(
 # 路由
 app.include_router(ai_router, prefix="/api/v1")
 app.include_router(sync_router, prefix="/api/v1")
+app.include_router(auth_router, prefix="/api/v1")
 
 
 @app.get("/")

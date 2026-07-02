@@ -9,7 +9,7 @@ import '../models/ai_analysis.dart';
 /// 后端 API 客户端
 class ApiClient {
   // 后端地址 — 本地调试用 localhost，真机/模拟器用 10.0.2.2 (Android) 或实际 IP
-  static const String baseUrl = 'http://localhost:8000/api/v1';
+  static const String baseUrl = 'http://10.0.55.17:9000/api/v1';
 
   /// 发送数据到 AI 分析接口
   static Future<AiAnalysisResult> analyze({

@@ -1,0 +1,16 @@
+{
+  "13800138000": {
+    "id": "f05dfbe3dc69d3ed",
+    "phone": "13800138000",
+    "password_hash": "d07cd15d9f444b7037b9585e4b2bbedc:00bb671d389f1c959558ae1ff06f96518e7ee773411f0894b77c13d6236464b5",
+    "nickname": "李姐",
+    "created_at": "2026-07-01 23:09:02"
+  },
+  "18824675385": {
+    "id": "780f97561e92af9b",
+    "phone": "18824675385",
+    "password_hash": "e57aced204a715a3b119b1b698d8e1b3:e34caf0929ff6013918c64f7ef7b2a772b8252874dc6aa3fb90cbf4a3dc8c1a5",
+    "nickname": "猫哥",
+    "created_at": "2026-07-02 09:52:29"
+  }
+}
